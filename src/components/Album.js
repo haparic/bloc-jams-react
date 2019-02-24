@@ -36,6 +36,7 @@ class Album extends Component {
               <tr className="song" key={index} >
                 <td className="song-controls">
                 </td>
+                <td className="song-number">{ song.number }</td>
                 <td className="song-title">{ song.title}</td>
                 <td className="song-duration">{"duration (s)" + song.duration }</td>
               </tr>
