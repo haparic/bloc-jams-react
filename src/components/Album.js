@@ -43,6 +43,20 @@ class Album extends Component {
       this.play();
     }
   }
+  pButton() {
+    if (hoverOn= True && isPlaying= False) {
+      <ion-icon name="play"></ion-icon>
+  }
+    else if (isPlaying= True) {
+      <ion-icon name="pause"></ion-icon>
+    }
+    else if (this.pause){
+      <ion-icon name="play"></ion-icon>
+    }
+    else {
+      index+1
+    }
+  }
 
 
   render() {
@@ -64,9 +78,18 @@ class Album extends Component {
           </colgroup>
           <tbody>
             {this.state.album.songs.map( (song, index) =>
-              <tr className="song" key={index} onClick={() => this.handleSongClick(song)} >
+              <tr className="song" key={index} 
+              onClick={() => this.handleSongClick(song)} 
+              onMouseEnter={() => this.hoverOn}
+              onMouseLeave={()=> this.hoverOff}
+              >        
                 <td className="song-controls">
                 </td>
+                <button>
+                    <span className="song-number">{index+1}</span>
+                    <span className="ion-play"></span>
+                    <span className="ion-pause"></span>
+                  </button>
                 <td className="song-number">{ song.number }</td>
                 <td className="song-title">{ song.title}</td>
                 <td className="song-duration">{song.duration }</td>
@@ -74,6 +97,7 @@ class Album extends Component {
             )}
           </tbody>
         </table>
+        <script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>
          </section>
     );
   }
