@@ -49,15 +49,19 @@ class Album extends Component {
     this.setState({isHoverOn: index });
   }
 
-  hoverOff() {
+  hoverOff(index) {
     this.setState({isHoverOn: false});
   }
   hovered(song, index) {
     const isSameSong = this.state.currentSong === song;
-    if (this.setState.isHoverOn === index) {
+    if (this.state.isHoverOn === index && !isSameSong && !this.state.isPlaying) {
+      return <span className="icon ion-md-play" />;
+    } else if (this.state.isHoverOn === index && isSameSong && !this.state.isPlaying) {
       return <span className="icon ion-md-play" />;
     } else if (this.state.isPlaying && isSameSong) {
         return <span className="icon ion-md-pause" />;
+    } else if(isSameSong) {
+      return <span className="icon ion-md-play" />;
     } else {
         return <span className="song-number">{index + 1}</span>;
     }
@@ -85,7 +89,7 @@ class Album extends Component {
               <tr className="song" key={index} 
               onClick={() => this.handleSongClick(song)} 
               onMouseEnter={() => this.hoverOn(index)}
-              onMouseLeave={()=> this.hoverOff()}
+              onMouseLeave={()=> this.hoverOff(index)}
               >        
                 <td className="song-controls">
                 </td>
@@ -106,4 +110,4 @@ class Album extends Component {
     );
   }
 }
-export default Album; 
+export default Album;
