@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import albumData from './../data/albums';
+import PlayerBar from './PlayerBar';
 
 class Album extends Component {
     constructor(props) {
@@ -44,7 +45,21 @@ class Album extends Component {
       this.play();
     }
   }
-  
+  handlePrevClick() {
+    const currentIndex = this.state.album.songs.findIndex(song => this.state.currentSong === song);
+      const newIndex = Math.max(0, currentIndex - 1);
+      const newSong = this.state.album.songs[newIndex];
+      this.setSong(newSong);
+      this.play();
+  }
+  handleNextClick() {
+    const currentIndex = this.state.album.songs.findIndex(song => this.state.currentSong === song);
+    const newIndex = Math.max(0, currentIndex + 1);
+    const newSong = this.state.album.songs[newIndex];
+    this.setSong(newSong);
+    this.play();
+  }
+
   hoverOn(index) {
     this.setState({isHoverOn: index });
   }
@@ -92,12 +107,10 @@ class Album extends Component {
               onMouseLeave={()=> this.hoverOff(index)}
               >        
                 <td className="song-controls">
-                </td>
                 <button>
                     <span className="song-number">{this.hovered(song, index)}</span>
-                    <span className="ion-play"></span>
-                    <span className="ion-pause"></span>
                   </button>
+                  </td>
                 <td className="song-number">{ song.number }</td>
                 <td className="song-title">{ song.title}</td>
                 <td className="song-duration">{song.duration }</td>
@@ -105,8 +118,14 @@ class Album extends Component {
             )}
           </tbody>
         </table>
-        <script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>
-         </section>
+        <PlayerBar
+           isPlaying={this.state.isPlaying}
+           currentSong={this.state.currentSong}
+           handleSongClick={() => this.handleSongClick(this.state.currentSong)}
+           handlePrevClick={() => this.handlePrevClick()}
+           handleNextClick={() => this.handleNextClick()}
+         />
+        </section>
     );
   }
 }
