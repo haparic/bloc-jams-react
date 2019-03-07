@@ -10,9 +10,11 @@ class Album extends Component {
         return album.slug === this.props.match.params.slug
       });
   
-      this.state = {
+      this.state = { //initial state is created here, setting everything at 0 value
       album: album,
       currentSong: album.songs[0],
+      currentTime: 0,
+      duration: album.songs[0].duration,
       isPlaying: false, 
       isHoverOn: false
     };
@@ -31,11 +33,28 @@ class Album extends Component {
      this.setState({ isPlaying: false });
    }   
 
+   componentDidMount() { //used when a component has been added to DOM. used w/ api calls and event handlers
+    this.eventListeners = {
+        timeupdate: e => {
+          this.setState({ currentTime: this.audioElement.currentTime }); //tells it to display the current time
+    
+        },
+        durationchange: e => {
+          this.setState({ duration: this.audioElement.duration }); // tells it to check for duration of song and show current time
+        }
+      };
+      this.audioElement.addEventListener('timeupdate', this.eventListeners.timeupdate);
+      this.audioElement.addEventListener('durationchange', this.eventListeners.durationchange);
+    }
+    componentWillUnmount() {
+      this.audioElement.src = null; //Must unmount or else it will keep going even after scripts stop running
+      this.audioElement.removeEventListener('timeupdate', this.eventListeners.timeupdate);
+      this.audioElement.removeEventListener('durationchange', this.eventListeners.durationchange);
+      }
    setSong(song) {
     this.audioElement.src = song.audioSrc;
     this.setState({ currentSong: song });
   }
-
   handleSongClick(song) {
     const isSameSong = this.state.currentSong === song;
     if (this.state.isPlaying && isSameSong) {
@@ -59,11 +78,14 @@ class Album extends Component {
     this.setSong(newSong);
     this.play();
   }
-
+  handleTimeChange(e) {
+    const newTime = this.audioElement.duration * e.target.value; //changes the duration to aspecified point "target value"
+    this.audioElement.currentTime = newTime;
+    this.setState({ currentTime: newTime });
+  }
   hoverOn(index) {
     this.setState({isHoverOn: index });
   }
-
   hoverOff(index) {
     this.setState({isHoverOn: false});
   }
@@ -121,9 +143,12 @@ class Album extends Component {
         <PlayerBar
            isPlaying={this.state.isPlaying}
            currentSong={this.state.currentSong}
+           currentTime={this.audioElement.currentTime}
+           duration={this.audioElement.duration}
            handleSongClick={() => this.handleSongClick(this.state.currentSong)}
            handlePrevClick={() => this.handlePrevClick()}
            handleNextClick={() => this.handleNextClick()}
+           handleTimeChange={(e) => this.handleTimeChange(e)}
          />
         </section>
     );
